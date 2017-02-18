@@ -30,7 +30,7 @@ var lang = file.match(/([a-z][a-z])wiki-/) || []
 lang = lang[1] || '-'
 
 // Connect to mongo
-var url = 'mongodb://localhost:27017/' + lang + '_wikipedia';
+var url = 'mongodb://mongo:27017/' + lang + '_wikipedia';
 MongoClient.connect(url, function(err, db) {
   if (err) {
     console.log(err)
