@@ -30,13 +30,28 @@ var lang = file.match(/([a-z][a-z])wiki-/) || []
 lang = lang[1] || '-'
 
 // Connect to mongo
-var url = 'mongodb://mongo:27017/' + lang + '_wikipedia';
+var url = 'mongodb://'
+
+// Check for username/pw/hostname/port in environment variables
+var mongo_user = process.env.MONGO_USER ? process.env.MONGO_USER : null;
+var mongo_pw = process.env.MONGO_PW ? process.env.MONGO_PW : null;
+
+if (mongo_pw && mongo_user) {
+  url += mongo_user + ':' + mongo_pw + '@';
+}
+
+url += process.env.MONGO_HOST ? process.env.MONGO_HOST : 'localhost';
+url += ':';
+url += process.env.MONGO_PORT ? process.env.MONGO_PORT : 27017;
+url += '/' + lang;
+url += process.env.MONGO_DB_SUFFIX ? process.env.MONGO_DB_SUFFIX : '_wikipedia';
+
 MongoClient.connect(url, function(err, db) {
   if (err) {
     console.log(err)
     process.exit(1)
   }
-  var collection = db.collection('wikipedia');
+  var collection = db.collection(process.env.MONGO_COLLECTION ? process.env.MONGO_COLLECTION : 'wikipedia');
   // Create a file stream and pass it to XmlStream
   var stream = fs.createReadStream(file).pipe(bz2());
   var xml = new XmlStream(stream);
