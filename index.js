@@ -45,6 +45,7 @@ url += ':';
 url += process.env.MONGO_PORT ? process.env.MONGO_PORT : 27017;
 url += '/' + lang;
 url += process.env.MONGO_DB_SUFFIX ? process.env.MONGO_DB_SUFFIX : '_wikipedia';
+console.info('Mongo URL: ' + url);
 
 MongoClient.connect(url, function(err, db) {
   if (err) {
